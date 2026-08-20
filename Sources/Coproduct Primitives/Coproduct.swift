@@ -107,19 +107,6 @@
     extension Coproduct: BitwiseCopyable
     where repeat each Element: BitwiseCopyable {}
 
-    // Stdlib Equatable / Hashable conformances are gated `#if swift(<6.4)` only.
-    // On Swift 6.4+ each institute `*.Protocol` is a typealias to its stdlib
-    // counterpart per SE-0499, so the unconditional institute conformance in
-    // `Coproduct+Equation.Protocol.swift` / `Coproduct+Hash.Protocol.swift` IS
-    // the stdlib conformance — declaring an additional stdlib extension here
-    // would trigger duplicate-conformance. Pattern matches swift-pair-primitives /
-    // swift-either-primitives / swift-product-primitives.
-    #if swift(<6.4)
-        extension Coproduct: Equatable where repeat each Element: Equatable {}
-
-        extension Coproduct: Hashable where repeat each Element: Hashable {}
-    #endif
-
     #if !hasFeature(Embedded)
         extension Coproduct: Codable where repeat each Element: Codable {}
     #endif

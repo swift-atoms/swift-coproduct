@@ -99,9 +99,6 @@ One library product, one target.
 | Product | Target | Contents |
 |---------|--------|----------|
 | `Coproduct Primitives` | `Sources/Coproduct Primitives/` | `Coproduct<each Element>` (variadic over parameter packs) + n-ary `fold` / `map` / `flatMap` instance + static methods + free `swapped(_:)` for n=2 + free `value(of:)` for single-arm-inhabited packs + conditional `Sendable` / `Equatable` / `Hashable` / `Comparable` / `CustomStringConvertible` / `Encodable` / `Decodable` / `Swift.Error` conformances. All declarations are gated `#if hasFeature(VariadicEnum)`. |
-
-Conditional `Equation.Protocol`, `Hash.Protocol`, and `Comparison.Protocol` conformances are gated `#if swift(<6.4)` per SE-0499; under Swift 6.4+, those institute protocols are typealiases to the stdlib counterparts and the existing stdlib conformances satisfy them automatically.
-
 Dependencies: `swift-equation-primitives`, `swift-hash-primitives`, `swift-comparison-primitives`. Foundation-free.
 
 ---
