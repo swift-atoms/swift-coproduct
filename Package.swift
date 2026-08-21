@@ -2,24 +2,6 @@
 
 import PackageDescription
 
-// swift-coproduct-primitives — n-ary coproduct primitive.
-//
-// All source declarations are guarded `#if hasFeature(VariadicEnum)`.
-// Swift 6.3.1 and Swift 6.4-dev do not define the feature; the target
-// emits zero public symbols on these toolchains.
-//
-// Two compiler constraints block activation, documented in
-// `Research/coproduct-primitive-design-and-blockers.md`:
-//
-//   1. Parameter-pack enum cases are rejected by the `enum_with_pack`
-//      diagnostic. See `swift/test/Generics/variadic_generic_types.swift`.
-//
-//   2. Parameter packs do not admit `~Copyable` / `~Escapable`
-//      requirements on `each` constraints. See
-//      `swift/test/Generics/inverse_copyable_requirement_errors.swift`
-//      (`packingUniqueHeat_*`). The same blocker gates
-//      `swift-product-primitives` from move-only arms.
-
 let package = Package(
     name: "swift-coproduct-primitives",
     platforms: [
