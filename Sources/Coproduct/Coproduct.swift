@@ -1,8 +1,8 @@
 #if hasFeature(VariadicEnum)
 
-    @_exported public import Comparison_Primitives
-    @_exported public import Equation_Primitives
-    @_exported public import Hash_Primitives
+    @_exported public import Comparison
+    @_exported public import Equation
+    @_exported public import Hash
 
     @frozen
     public enum Coproduct<each Element: ~Copyable & ~Escapable>: ~Copyable, ~Escapable {
