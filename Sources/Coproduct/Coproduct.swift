@@ -1,9 +1,5 @@
 #if hasFeature(VariadicEnum)
 
-    @_exported public import Comparison
-    @_exported public import Equation
-    @_exported public import Hash
-
     @frozen
     public enum Coproduct<each Element: ~Copyable & ~Escapable>: ~Copyable, ~Escapable {
 
@@ -21,11 +17,5 @@
 
     extension Coproduct: BitwiseCopyable
     where repeat each Element: BitwiseCopyable {}
-
-    #if !hasFeature(Embedded)
-        extension Coproduct: Codable where repeat each Element: Codable {}
-    #endif
-
-    extension Coproduct: Swift.Error where repeat each Element: Swift.Error {}
 
 #endif

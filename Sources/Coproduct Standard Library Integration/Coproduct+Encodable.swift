@@ -1,6 +1,8 @@
 #if hasFeature(VariadicEnum)
     #if !hasFeature(Embedded)
 
+        public import Coproduct
+
         extension Coproduct: Encodable where repeat each Element: Encodable {
 
             @inlinable
