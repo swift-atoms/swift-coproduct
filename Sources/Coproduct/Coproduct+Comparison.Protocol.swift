@@ -1,7 +1,7 @@
 #if hasFeature(VariadicEnum)
 
-    extension Coproduct: Comparison.`Protocol`
-    where repeat each Element: Comparison.`Protocol` & ~Copyable {
+    extension Coproduct: Comparison::Comparison.`Protocol`
+    where repeat each Element: Comparison::Comparison.`Protocol` & ~Copyable {
 
         @inlinable
         @_disfavoredOverload

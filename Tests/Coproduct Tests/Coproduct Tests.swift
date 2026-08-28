@@ -1,4 +1,4 @@
-import Coproduct_Primitives
+import Coproduct
 import Testing
 
 @Suite

@@ -1,7 +1,7 @@
 #if hasFeature(VariadicEnum)
 
-    extension Coproduct: Equation.`Protocol`
-    where repeat each Element: Equation.`Protocol` & ~Copyable {
+    extension Coproduct: Equation::Equation.`Protocol`
+    where repeat each Element: Equation::Equation.`Protocol` & ~Copyable {
 
         @inlinable
         @_disfavoredOverload

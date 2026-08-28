@@ -3,7 +3,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-coproduct-primitives",
+    name: "swift-coproduct",
     platforms: [
         .macOS(.v27),
         .iOS(.v27),
@@ -13,37 +13,37 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "Coproduct Primitives",
-            targets: ["Coproduct Primitives"]
+            name: "Coproduct",
+            targets: ["Coproduct"]
         )
     ],
     dependencies: [
         .package(
-            url: "https://github.com/swift-primitives/swift-equation-primitives.git",
+            url: "https://github.com/swift-atoms/swift-equation.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-hash-primitives.git",
+            url: "https://github.com/swift-atoms/swift-hash.git",
             branch: "main"
         ),
         .package(
-            url: "https://github.com/swift-primitives/swift-comparison-primitives.git",
+            url: "https://github.com/swift-atoms/swift-comparison.git",
             branch: "main"
         ),
     ],
     targets: [
         .target(
-            name: "Coproduct Primitives",
+            name: "Coproduct",
             dependencies: [
-                .product(name: "Equation Primitives", package: "swift-equation-primitives"),
-                .product(name: "Hash Primitives", package: "swift-hash-primitives"),
-                .product(name: "Comparison Primitives", package: "swift-comparison-primitives"),
+                .product(name: "Equation Protocol", package: "swift-equation"),
+                .product(name: "Hash Protocol", package: "swift-hash"),
+                .product(name: "Comparison Protocol", package: "swift-comparison"),
             ]
         ),
         .testTarget(
-            name: "Coproduct Primitives Tests",
+            name: "Coproduct Tests",
             dependencies: [
-                "Coproduct Primitives"
+                .target(name: "Coproduct")
             ]
         ),
     ],

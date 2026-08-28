@@ -1,10 +1,10 @@
-# Coproduct Primitives
+# Coproduct
 
 ![Development Status](https://img.shields.io/badge/status-experimental-red.svg)
 
 `Coproduct<each Element>` — the n-ary coproduct type, a generic sum that holds exactly one value out of an arbitrary list of types. Where `Either` is the binary coproduct, `Coproduct` is its variadic generalization; the dual of `Product`'s n-ary cartesian product.
 
-The package's source files declare `Coproduct<each Element>` and its operators inside `#if hasFeature(VariadicEnum)`. Swift 6.3.1 and Swift 6.4-dev reject parameter-pack enum cases with the `enum_with_pack` diagnostic ("enums cannot declare a type pack" — see `swift/test/Generics/variadic_generic_types.swift`); on these toolchains, importing `Coproduct_Primitives` resolves to zero public symbols and the package builds clean. The API surface documented below activates only when an upstream toolchain defines `VariadicEnum` (or an equivalently-named gate). Refer to `Research/coproduct-primitive-design-and-blockers.md` for the blocker survey.
+The package's source files declare `Coproduct<each Element>` and its operators inside `#if hasFeature(VariadicEnum)`. Swift 6.3.1 and Swift 6.4-dev reject parameter-pack enum cases with the `enum_with_pack` diagnostic ("enums cannot declare a type pack" — see `swift/test/Generics/variadic_generic_types.swift`); on these toolchains, importing `Coproduct` resolves to zero public symbols and the package builds clean. The API surface documented below activates only when an upstream toolchain defines `VariadicEnum` (or an equivalently-named gate). Refer to `Research/coproduct-primitive-design-and-blockers.md` for the blocker survey.
 
 ---
 
@@ -13,7 +13,7 @@ The package's source files declare `Coproduct<each Element>` and its operators i
 The snippets below describe the API declared in the gated source files. They compile only on a toolchain where the feature gate is defined.
 
 ```swift
-import Coproduct_Primitives
+import Coproduct
 
 // arity-3 coproduct over three error domains
 let result: Coproduct<Lex.Error, Parse.Error, Validation.Error> =
@@ -67,7 +67,7 @@ let v = value(of: c)   // 42 — every other arm is uninhabited
 
 `Coproduct` is a *movement vehicle* — it transports one of N alternative values. It does not close, unlock, or otherwise act on its arm on drop; lifecycle decisions belong to the consumer, typically via `fold` or `value(of:)` extraction.
 
-Each arm carries `~Copyable & ~Escapable` suppressions on the pack constraint. Parameter packs do not yet admit `each T: ~Copyable` or `each T: ~Escapable` in Swift 6.3.1 or 6.4-dev (`swift/test/Generics/inverse_copyable_requirement_errors.swift` enforces the rejection on `packingUniqueHeat_1` / `packingUniqueHeat_2`); the same cohort blocker gates `swift-product-primitives` from move-only arms. Closure-bearing methods (`map`, `fold`, `flatMap`) admit `~Escapable` on the un-transformed arms only, mirroring `Either`'s closure constraint.
+Each arm carries `~Copyable & ~Escapable` suppressions on the pack constraint. Parameter packs do not yet admit `each T: ~Copyable` or `each T: ~Escapable` in Swift 6.3.1 or 6.4-dev (`swift/test/Generics/inverse_copyable_requirement_errors.swift` enforces the rejection on `packingUniqueHeat_1` / `packingUniqueHeat_2`); the same cohort blocker gates `swift-product` from move-only arms. Closure-bearing methods (`map`, `fold`, `flatMap`) admit `~Escapable` on the un-transformed arms only, mirroring `Either`'s closure constraint.
 
 ---
 
@@ -75,7 +75,7 @@ Each arm carries `~Copyable & ~Escapable` suppressions on the pack constraint. P
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-primitives/swift-coproduct-primitives.git", branch: "main")
+    .package(url: "https://github.com/swift-atoms/swift-coproduct.git", branch: "main")
 ]
 ```
 
@@ -83,12 +83,12 @@ dependencies: [
 .target(
     name: "App",
     dependencies: [
-        .product(name: "Coproduct Primitives", package: "swift-coproduct-primitives"),
+        .product(name: "Coproduct", package: "swift-coproduct"),
     ]
 )
 ```
 
-Requires Swift 6.3.1 and macOS 26 / iOS 26 / tvOS 26 / watchOS 26 / visionOS 26 (or the matching Linux / Windows toolchain). On current toolchains, importing `Coproduct_Primitives` resolves to zero public symbols.
+Requires Swift 6.3.1 and macOS 26 / iOS 26 / tvOS 26 / watchOS 26 / visionOS 26 (or the matching Linux / Windows toolchain). On current toolchains, importing `Coproduct` resolves to zero public symbols.
 
 ---
 
@@ -98,8 +98,8 @@ One library product, one target.
 
 | Product | Target | Contents |
 |---------|--------|----------|
-| `Coproduct Primitives` | `Sources/Coproduct Primitives/` | `Coproduct<each Element>` (variadic over parameter packs) + n-ary `fold` / `map` / `flatMap` instance + static methods + free `swapped(_:)` for n=2 + free `value(of:)` for single-arm-inhabited packs + conditional `Sendable` / `Equatable` / `Hashable` / `Comparable` / `CustomStringConvertible` / `Encodable` / `Decodable` / `Swift.Error` conformances. All declarations are gated `#if hasFeature(VariadicEnum)`. |
-Dependencies: `swift-equation-primitives`, `swift-hash-primitives`, `swift-comparison-primitives`. Foundation-free.
+| `Coproduct` | `Sources/Coproduct/` | `Coproduct<each Element>` (variadic over parameter packs) + n-ary `fold` / `map` / `flatMap` instance + static methods + free `swapped(_:)` for n=2 + free `value(of:)` for single-arm-inhabited packs + conditional `Sendable` / `Equatable` / `Hashable` / `Comparable` / `CustomStringConvertible` / `Encodable` / `Decodable` / `Swift.Error` conformances. All declarations are gated `#if hasFeature(VariadicEnum)`. |
+Dependencies: `swift-equation`, `swift-hash`, `swift-comparison`. Foundation-free.
 
 ---
 
@@ -119,15 +119,15 @@ Dependencies: `swift-equation-primitives`, `swift-hash-primitives`, `swift-compa
 
 ### Dependencies
 
-- [swift-equation-primitives](https://github.com/swift-primitives/swift-equation-primitives) — institute `Equation.Protocol`.
-- [swift-hash-primitives](https://github.com/swift-primitives/swift-hash-primitives) — institute `Hash.Protocol`.
-- [swift-comparison-primitives](https://github.com/swift-primitives/swift-comparison-primitives) — institute `Comparison.Protocol`.
+- [swift-equation](https://github.com/swift-atoms/swift-equation) — institute `Equation.Protocol`.
+- [swift-hash](https://github.com/swift-atoms/swift-hash) — institute `Hash.Protocol`.
+- [swift-comparison](https://github.com/swift-atoms/swift-comparison) — institute `Comparison.Protocol`.
 
 ### Cohort siblings
 
-- [swift-pair-primitives](https://github.com/swift-primitives/swift-pair-primitives) — binary product.
-- [swift-either-primitives](https://github.com/swift-primitives/swift-either-primitives) — binary coproduct.
-- [swift-product-primitives](https://github.com/swift-primitives/swift-product-primitives) — n-ary product.
+- [swift-pair](https://github.com/swift-atoms/swift-pair) — binary product.
+- [swift-either](https://github.com/swift-atoms/swift-either) — binary coproduct.
+- [swift-product](https://github.com/swift-atoms/swift-product) — n-ary product.
 
 ---
 
