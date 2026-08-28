@@ -75,7 +75,7 @@ Each arm carries `~Copyable & ~Escapable` suppressions on the pack constraint. P
 
 ```swift
 dependencies: [
-    .package(url: "https://github.com/swift-molecules/swift-coproduct.git", branch: "main")
+    .package(url: "https://github.com/swift-atoms/swift-coproduct.git", branch: "main")
 ]
 ```
 
@@ -119,15 +119,15 @@ Dependencies: `swift-equation`, `swift-hash`, `swift-comparison`. Foundation-fre
 
 ### Dependencies
 
-- [swift-equation](https://github.com/swift-molecules/swift-equation) — institute `Equation.Protocol`.
-- [swift-hash](https://github.com/swift-molecules/swift-hash) — institute `Hash.Protocol`.
-- [swift-comparison](https://github.com/swift-molecules/swift-comparison) — institute `Comparison.Protocol`.
+- [swift-equation](https://github.com/swift-atoms/swift-equation) — institute `Equation.Protocol`.
+- [swift-hash](https://github.com/swift-atoms/swift-hash) — institute `Hash.Protocol`.
+- [swift-comparison](https://github.com/swift-atoms/swift-comparison) — institute `Comparison.Protocol`.
 
 ### Cohort siblings
 
-- [swift-pair](https://github.com/swift-molecules/swift-pair) — binary product.
-- [swift-either](https://github.com/swift-molecules/swift-either) — binary coproduct.
-- [swift-product](https://github.com/swift-molecules/swift-product) — n-ary product.
+- [swift-pair](https://github.com/swift-atoms/swift-pair) — binary product.
+- [swift-either](https://github.com/swift-atoms/swift-either) — binary coproduct.
+- [swift-product](https://github.com/swift-atoms/swift-product) — n-ary product.
 
 ---
 

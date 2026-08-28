@@ -1,7 +1,7 @@
 #if hasFeature(VariadicEnum)
 
     extension Coproduct: Swift.Hashable
-    where repeat each Element: Hash.`Protocol` & ~Copyable {
+    where repeat each Element: Hash::Hash.`Protocol` & ~Copyable {
 
         @inlinable
         @_disfavoredOverload
@@ -13,7 +13,7 @@
         }
     }
 
-    extension Coproduct: Hash.`Protocol`
-    where repeat each Element: Hash.`Protocol` & ~Copyable {}
+    extension Coproduct: Hash::Hash.`Protocol`
+    where repeat each Element: Hash::Hash.`Protocol` & ~Copyable {}
 
 #endif
