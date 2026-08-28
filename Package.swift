@@ -15,31 +15,29 @@ let package = Package(
         .library(
             name: "Coproduct",
             targets: ["Coproduct"]
+        )
+    ],
+    dependencies: [
+        .package(
+            url: "https://github.com/swift-molecules/swift-equation.git",
+            branch: "main"
         ),
-        .library(
-            name: "Coproduct Standard Library Integration",
-            targets: ["Coproduct Standard Library Integration"]
+        .package(
+            url: "https://github.com/swift-molecules/swift-hash.git",
+            branch: "main"
         ),
-        .library(
-            name: "Coproduct Apple Foundation Integration",
-            targets: ["Coproduct Apple Foundation Integration"]
+        .package(
+            url: "https://github.com/swift-molecules/swift-comparison.git",
+            branch: "main"
         ),
     ],
-    dependencies: [],
     targets: [
         .target(
             name: "Coproduct",
-            dependencies: []
-        ),
-        .target(
-            name: "Coproduct Standard Library Integration",
-            dependencies: ["Coproduct"]
-        ),
-        .target(
-            name: "Coproduct Apple Foundation Integration",
             dependencies: [
-                "Coproduct",
-                "Coproduct Standard Library Integration",
+                .product(name: "Equation", package: "swift-equation"),
+                .product(name: "Hash", package: "swift-hash"),
+                .product(name: "Comparison", package: "swift-comparison"),
             ]
         ),
         .testTarget(

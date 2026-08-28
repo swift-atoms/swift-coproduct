@@ -1,7 +1,5 @@
 #if hasFeature(VariadicEnum)
 
-    public import Coproduct
-
     extension Coproduct: CustomStringConvertible
     where repeat each Element: CustomStringConvertible {
 
