@@ -1,31 +1,46 @@
 #if hasFeature(VariadicEnum)
+@_exported public import Comparison
+#endif
 
-    @_exported public import Comparison
-    @_exported public import Equation
-    @_exported public import Hash
+#if hasFeature(VariadicEnum)
+@_exported public import Equation
+#endif
 
-    @frozen
+#if hasFeature(VariadicEnum)
+@_exported public import Hash
+#endif
+
+
+#if hasFeature(VariadicEnum)
+@frozen
     public enum Coproduct<each Element: ~Copyable & ~Escapable>: ~Copyable, ~Escapable {
 
         case at(each Element)
     }
+#endif
 
-    extension Coproduct: Copyable
-    where repeat each Element: Copyable & ~Escapable {}
 
-    extension Coproduct: Escapable
-    where repeat each Element: Escapable & ~Copyable {}
+#if hasFeature(VariadicEnum)
+extension Coproduct: Swift.Copyable
+    where repeat each Element: Swift.Copyable & ~Escapable {}
+#endif
 
-    extension Coproduct: Sendable
-    where repeat each Element: Sendable & ~Copyable & ~Escapable {}
 
-    extension Coproduct: BitwiseCopyable
-    where repeat each Element: BitwiseCopyable {}
+#if hasFeature(VariadicEnum)
+extension Coproduct: Swift.Escapable
+    where repeat each Element: Swift.Escapable & ~Copyable {}
+#endif
 
-    #if !hasFeature(Embedded)
-        extension Coproduct: Codable where repeat each Element: Codable {}
-    #endif
 
-    extension Coproduct: Swift.Error where repeat each Element: Swift.Error {}
+#if hasFeature(VariadicEnum)
+extension Coproduct: Swift.Sendable
+    where repeat each Element: Swift.Sendable & ~Copyable & ~Escapable {}
+#endif
+
+
+#if hasFeature(VariadicEnum)
+#if !hasFeature(Embedded)
+extension Coproduct: Swift.Codable where repeat each Element: Swift.Codable {}
+#endif
 
 #endif

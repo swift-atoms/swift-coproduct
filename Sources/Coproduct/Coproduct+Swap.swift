@@ -1,6 +1,5 @@
 #if hasFeature(VariadicEnum)
-
-    @inlinable
+@inlinable
     @_lifetime(copy coproduct)
     public func swapped<First: ~Copyable & ~Escapable, Second: ~Copyable & ~Escapable>(
         _ coproduct: consuming Coproduct<First, Second>
@@ -11,5 +10,4 @@
             .at(consume value)
         }
     }
-
 #endif

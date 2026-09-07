@@ -1,6 +1,5 @@
 #if hasFeature(VariadicEnum)
-
-    extension Coproduct: Equation::Equation.`Protocol`
+extension Coproduct: Equation::Equation.`Protocol`
     where repeat each Element: Equation::Equation.`Protocol` & ~Copyable {
 
         @inlinable

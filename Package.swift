@@ -13,8 +13,8 @@ let package = Package(
     ],
     products: [
         .library(name: "Coproduct", targets: ["Coproduct"]),
-        .library(name: "Coproduct Standard Library Integration", targets: ["Coproduct Standard Library Integration"]),
-        .library(name: "Coproduct Foundation Library Integration", targets: ["Coproduct Foundation Library Integration"]),
+
+        .library(name: "Coproduct Foundation Integration", targets: ["Coproduct Foundation Integration"]),
         .library(name: "Coproduct Test Support", targets: ["Coproduct Test Support"]),
     ],
     dependencies: [
@@ -41,20 +41,13 @@ let package = Package(
             ],
             path: "Sources/Coproduct"
         ),
+        
         .target(
-            name: "Coproduct Standard Library Integration",
+            name: "Coproduct Foundation Integration",
             dependencies: [
                 .target(name: "Coproduct"),
             ],
-            path: "Sources/Coproduct Standard Library Integration"
-        ),
-        .target(
-            name: "Coproduct Foundation Library Integration",
-            dependencies: [
-                .target(name: "Coproduct"),
-                .target(name: "Coproduct Standard Library Integration"),
-            ],
-            path: "Sources/Coproduct Foundation Library Integration"
+            path: "Sources/Coproduct Foundation Integration"
         ),
         .target(
             name: "Coproduct Test Support",
@@ -68,8 +61,7 @@ let package = Package(
             dependencies: [
                 .target(name: "Coproduct"),
                 .target(name: "Coproduct Test Support"),
-                .target(name: "Coproduct Standard Library Integration"),
-                .target(name: "Coproduct Foundation Library Integration"),
+                .target(name: "Coproduct Foundation Integration"),
             ],
             path: "Tests/Coproduct Tests"
         ),

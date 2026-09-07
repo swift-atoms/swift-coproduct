@@ -1,6 +1,5 @@
 #if hasFeature(VariadicEnum)
-
-    extension Coproduct where repeat each Element: ~Copyable {
+extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
         public static func flatMap<each NewElement: ~Copyable, E: Swift.Error>(
@@ -15,8 +14,11 @@
             }
         }
     }
+#endif
 
-    extension Coproduct where repeat each Element == FirstElement, FirstElement: ~Copyable {
+
+#if hasFeature(VariadicEnum)
+extension Coproduct where repeat each Element == FirstElement, FirstElement: ~Copyable {
 
         @inlinable
         public static func flatMap<each NewElement: ~Copyable, E: Swift.Error>(
@@ -30,8 +32,11 @@
             }
         }
     }
+#endif
 
-    extension Coproduct where repeat each Element: ~Copyable {
+
+#if hasFeature(VariadicEnum)
+extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
         public consuming func flatMap<each NewElement: ~Copyable, E: Swift.Error>(
@@ -41,5 +46,4 @@
             try Self.flatMap(self, repeat each transforms)
         }
     }
-
 #endif

@@ -1,6 +1,5 @@
 #if hasFeature(VariadicEnum)
-
-    extension Coproduct: Comparison::Comparison.`Protocol`
+extension Coproduct: Comparison::Comparison.`Protocol`
     where repeat each Element: Comparison::Comparison.`Protocol` & ~Copyable {
 
         @inlinable

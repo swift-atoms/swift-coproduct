@@ -1,7 +1,6 @@
 #if hasFeature(VariadicEnum)
-
-    extension Coproduct: CustomStringConvertible
-    where repeat each Element: CustomStringConvertible {
+extension Coproduct: Swift.CustomStringConvertible
+    where repeat each Element: Swift.CustomStringConvertible {
 
         @inlinable
         public var description: String {
@@ -12,5 +11,4 @@
             }
         }
     }
-
 #endif
