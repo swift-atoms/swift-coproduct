@@ -12,10 +12,10 @@ let package = Package(
         .visionOS(.v27),
     ],
     products: [
-        .library(
-            name: "Coproduct",
-            targets: ["Coproduct"]
-        )
+        .library(name: "Coproduct", targets: ["Coproduct"]),
+        .library(name: "Coproduct Standard Library Integration", targets: ["Coproduct Standard Library Integration"]),
+        .library(name: "Coproduct Foundation Library Integration", targets: ["Coproduct Foundation Library Integration"]),
+        .library(name: "Coproduct Test Support", targets: ["Coproduct Test Support"]),
     ],
     dependencies: [
         .package(
@@ -35,23 +35,50 @@ let package = Package(
         .target(
             name: "Coproduct",
             dependencies: [
-                .product(name: "Equation Protocol", package: "swift-equation"),
-                .product(name: "Hash Protocol", package: "swift-hash"),
-                .product(name: "Comparison Protocol", package: "swift-comparison"),
-            ]
+                .product(name: "Equation", package: "swift-equation"),
+                .product(name: "Hash", package: "swift-hash"),
+                .product(name: "Comparison", package: "swift-comparison"),
+            ],
+            path: "Sources/Coproduct"
+        ),
+        .target(
+            name: "Coproduct Standard Library Integration",
+            dependencies: [
+                .target(name: "Coproduct"),
+            ],
+            path: "Sources/Coproduct Standard Library Integration"
+        ),
+        .target(
+            name: "Coproduct Foundation Library Integration",
+            dependencies: [
+                .target(name: "Coproduct"),
+                .target(name: "Coproduct Standard Library Integration"),
+            ],
+            path: "Sources/Coproduct Foundation Library Integration"
+        ),
+        .target(
+            name: "Coproduct Test Support",
+            dependencies: [
+                .target(name: "Coproduct"),
+            ],
+            path: "Tests/Support"
         ),
         .testTarget(
             name: "Coproduct Tests",
             dependencies: [
-                .target(name: "Coproduct")
-            ]
+                .target(name: "Coproduct"),
+                .target(name: "Coproduct Test Support"),
+                .target(name: "Coproduct Standard Library Integration"),
+                .target(name: "Coproduct Foundation Library Integration"),
+            ],
+            path: "Tests/Coproduct Tests"
         ),
     ],
     swiftLanguageModes: [.v6]
 )
 
-for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    let ecosystem: [SwiftSetting] = [
+for target in package.targets {
+    target.swiftSettings = [
         .strictMemorySafety(),
         .enableUpcomingFeature("ExistentialAny"),
         .enableUpcomingFeature("InternalImportsByDefault"),
@@ -60,8 +87,4 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableExperimentalFeature("Lifetimes"),
         .enableUpcomingFeature("InferIsolatedConformances"),
     ]
-
-    let package: [SwiftSetting] = []
-
-    target.swiftSettings = (target.swiftSettings ?? []) + ecosystem + package
 }
