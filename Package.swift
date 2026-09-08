@@ -18,6 +18,7 @@ let package = Package(
         .library(name: "Coproduct Test Support", targets: ["Coproduct Test Support"]),
     ],
     dependencies: [
+
         .package(
             url: "https://github.com/swift-atoms/swift-equation.git",
             branch: "main"
@@ -64,6 +65,33 @@ let package = Package(
                 .target(name: "Coproduct Foundation Integration"),
             ],
             path: "Tests/Coproduct Tests"
+        ),
+        .testTarget(
+            name: "Consolidated Coproduct Comparison Tests",
+            dependencies: [
+
+                .target(name: "Coproduct"),
+                .product(name: "Comparison", package: "swift-comparison"),
+            ],
+            path: "Tests/Consolidated swift-coproduct-comparison"
+        ),
+        .testTarget(
+            name: "Consolidated Coproduct Equation Tests",
+            dependencies: [
+
+                .target(name: "Coproduct"),
+                .product(name: "Equation", package: "swift-equation"),
+            ],
+            path: "Tests/Consolidated swift-coproduct-equation"
+        ),
+        .testTarget(
+            name: "Consolidated Coproduct Hash Tests",
+            dependencies: [
+
+                .target(name: "Coproduct"),
+                .product(name: "Hash", package: "swift-hash"),
+            ],
+            path: "Tests/Consolidated swift-coproduct-hash"
         ),
     ],
     swiftLanguageModes: [.v6]
