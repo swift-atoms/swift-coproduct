@@ -13,7 +13,6 @@ let package = Package(
     ],
     products: [
         .library(name: "Coproduct", targets: ["Coproduct"]),
-
         .library(name: "Coproduct Foundation Integration", targets: ["Coproduct Foundation Integration"]),
         .library(name: "Coproduct Test Support", targets: ["Coproduct Test Support"]),
     ],
