@@ -1,4 +1,3 @@
-# .github/metadata.yaml
 description: "The Coproduct n-ary coproduct type for typed sum values in Swift. Source-only — guarded `#if hasFeature(VariadicEnum)`."
 topics:
   - primitives
