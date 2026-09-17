@@ -1,5 +1,6 @@
 // swift-tools-version: 6.4
 
+import CompilerPluginSupport
 import PackageDescription
 
 let package = Package(
@@ -15,30 +16,17 @@ let package = Package(
         .library(name: "Coproduct", targets: ["Coproduct"]),
         .library(name: "Coproduct Foundation Integration", targets: ["Coproduct Foundation Integration"]),
         .library(name: "Coproduct Test Support", targets: ["Coproduct Test Support"]),
+        .library(name: "Coproduct Macro Core", targets: ["Coproduct Macro Core"]),
+        .library(name: "Eliminator Macro", targets: ["Eliminator Macro"]),
+        .library(name: "Eliminator Macro Core", targets: ["Eliminator Macro Core"]),
     ],
     dependencies: [
-
-        .package(
-            url: "https://github.com/swift-atoms/swift-equation.git",
-            branch: "main"
-        ),
-        .package(
-            url: "https://github.com/swift-atoms/swift-hash.git",
-            branch: "main"
-        ),
-        .package(
-            url: "https://github.com/swift-atoms/swift-comparison.git",
-            branch: "main"
-        ),
+        .package(url: "https://github.com/swiftlang/swift-syntax.git", "603.0.2"..<"604.0.0"),
     ],
     targets: [
         .target(
             name: "Coproduct",
-            dependencies: [
-                .product(name: "Equation", package: "swift-equation"),
-                .product(name: "Hash", package: "swift-hash"),
-                .product(name: "Comparison", package: "swift-comparison"),
-            ],
+            dependencies: [],
             path: "Sources/Coproduct"
         ),
         
@@ -65,38 +53,56 @@ let package = Package(
             ],
             path: "Tests/Coproduct Tests"
         ),
-        .testTarget(
-            name: "Consolidated Coproduct Comparison Tests",
+        .target(
+            name: "Coproduct Macro Core",
             dependencies: [
-
-                .target(name: "Coproduct"),
-                .product(name: "Comparison", package: "swift-comparison"),
-            ],
-            path: "Tests/Consolidated swift-coproduct-comparison"
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+            ]
         ),
         .testTarget(
-            name: "Consolidated Coproduct Equation Tests",
+            name: "Coproduct Macro Tests",
             dependencies: [
-
-                .target(name: "Coproduct"),
-                .product(name: "Equation", package: "swift-equation"),
-            ],
-            path: "Tests/Consolidated swift-coproduct-equation"
+                "Coproduct Macro Core",
+                .product(name: "SwiftParser", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+            ]
+        ),
+        .target(
+            name: "Eliminator Macro Core",
+            dependencies: [
+                "Coproduct Macro Core",
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
+            ]
+        ),
+        .macro(
+            name: "Eliminator Macro Plugin",
+            dependencies: [
+                "Eliminator Macro Core",
+                .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
+                .product(name: "SwiftSyntax", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
+            ]
+        ),
+        .target(
+            name: "Eliminator Macro",
+            dependencies: ["Eliminator Macro Plugin"]
         ),
         .testTarget(
-            name: "Consolidated Coproduct Hash Tests",
+            name: "Eliminator Macro Tests",
             dependencies: [
-
-                .target(name: "Coproduct"),
-                .product(name: "Hash", package: "swift-hash"),
+                "Eliminator Macro",
+                "Eliminator Macro Plugin",
+                .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
+                .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ],
-            path: "Tests/Consolidated swift-coproduct-hash"
+            resources: [.copy("Fixtures")]
         ),
     ],
     swiftLanguageModes: [.v6]
 )
 
-for target in package.targets {
+for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
     target.swiftSettings = [
         .strictMemorySafety(),
         .enableUpcomingFeature("ExistentialAny"),
@@ -105,5 +111,6 @@ for target in package.targets {
         .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
         .enableExperimentalFeature("Lifetimes"),
         .enableUpcomingFeature("InferIsolatedConformances"),
+        .enableExperimentalFeature("MoveOnlyTuples"),
     ]
 }

@@ -1,9 +1,8 @@
 #if hasFeature(VariadicEnum)
-extension Coproduct: Equation::Equation.`Protocol`
-    where repeat each Element: Equation::Equation.`Protocol` & ~Copyable {
+extension Coproduct: Swift.Equatable
+    where repeat each Element: Swift.Equatable & ~Copyable {
 
         @inlinable
-        @_disfavoredOverload
         public static func == (lhs: borrowing Coproduct, rhs: borrowing Coproduct) -> Bool {
 
             switch (lhs, rhs) {

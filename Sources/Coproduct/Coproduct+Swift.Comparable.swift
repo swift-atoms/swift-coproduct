@@ -1,9 +1,8 @@
 #if hasFeature(VariadicEnum)
-extension Coproduct: Comparison::Comparison.`Protocol`
-    where repeat each Element: Comparison::Comparison.`Protocol` & ~Copyable {
+extension Coproduct: Swift.Comparable
+    where repeat each Element: Swift.Comparable & ~Copyable {
 
         @inlinable
-        @_disfavoredOverload
         public static func < (lhs: borrowing Coproduct, rhs: borrowing Coproduct) -> Bool {
 
             switch (lhs, rhs) {
