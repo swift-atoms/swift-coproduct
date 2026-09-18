@@ -60,7 +60,7 @@ extension Eliminator {
 
                     @_lifetime(borrow self, borrow value)
                     \(raw: access)func callAsFunction(_ value: borrowing \(analysis.whole)) -> Result {
-                        switch value {
+                        switch \(raw: analysis.isCopyableSuppressed ? "" : "copy ")value {
                         \(raw: branches)
                         }
                     }
