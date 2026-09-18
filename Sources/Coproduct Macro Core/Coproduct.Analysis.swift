@@ -45,6 +45,39 @@ extension Coproduct {
                 return first?.tokenKind == .wildcard ? nil : first
             }
 
+            // The spellings every derivation over a case shares: the pattern that binds its payload, the
+            // constructor arguments that rebuild it, and the tuple expression that projects it.
+
+            /// One binding name per parameter: `value0, value1, …` under the given stem.
+            public func bindings(_ stem: String = "value") -> [String] {
+                parameters.indices.map { "\(stem)\($0)" }
+            }
+
+            /// `.name`, `.name(value0)` or `.name(value0, value1)`: the pattern binding the payload.
+            public func pattern(_ stem: String = "value") -> String {
+                parameters.isEmpty ? ".\(name.text)" : "let .\(name.text)(\(bindings(stem).joined(separator: ", ")))"
+            }
+
+            /// The constructor arguments rebuilding the case from the given values, labelled as declared.
+            public func constructorArguments(_ values: [String]) -> String {
+                values.enumerated().map { offset, value in
+                    constructorLabel(at: offset).map { "\($0.text): \(value)" } ?? value
+                }.joined(separator: ", ")
+            }
+
+            /// The payload as one expression: `()`, the single value, or a labelled tuple of the values.
+            public func payloadExpression(_ values: [String]) -> String {
+                switch values.count {
+                case 0: return "()"
+                case 1: return values[0]
+                default:
+                    let elements = values.enumerated().map { offset, value in
+                        tupleLabel(at: offset).map { "\($0.text): \(value)" } ?? value
+                    }
+                    return "(\(elements.joined(separator: ", ")))"
+                }
+            }
+
             private static func payload(
                 of parameters: [EnumCaseParameterSyntax]
             ) -> TypeSyntax {
