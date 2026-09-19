@@ -12,8 +12,7 @@ public struct Macro: MemberMacro {
         guard let declaration = declaration.as(EnumDeclSyntax.self) else {
             throw MacroExpansionErrorMessage("@Eliminator applies to an enum declaration only.")
         }
-        let arguments: LabeledExprListSyntax
-        if case let .argumentList(list) = node.arguments { arguments = list } else { arguments = [] }
+        let arguments = node.arguments?.as(LabeledExprListSyntax.self) ?? []
         func enabled(_ label: String) throws -> Bool {
             guard let expression = arguments.first(where: { $0.label?.text == label })?.expression else { return false }
             guard let literal = expression.as(BooleanLiteralExprSyntax.self) else {
