@@ -28,6 +28,8 @@ private struct `Compiler Tests` {
         process.executableURL = URL(fileURLWithPath: "/usr/bin/xcrun")
         process.arguments = [
             "swiftc",
+            "-enable-upcoming-feature", "MemberImportVisibility",
+            "-warnings-as-errors",
             "-typecheck",
             "-swift-version", "6",
             "-enable-experimental-feature", "Lifetimes",

@@ -16,11 +16,11 @@ let package = Package(
         .library(name: "Coproduct", targets: ["Coproduct"]),
         .library(name: "Coproduct Foundation Integration", targets: ["Coproduct Foundation Integration"]),
         .library(name: "Coproduct Test Support", targets: ["Coproduct Test Support"]),
-        .library(name: "Coproduct Macro Core", targets: ["Coproduct Macro Core"]),
+        .library(name: "Coproduct Syntax", targets: ["Coproduct Syntax"]),
         .library(name: "Eliminator Macro", targets: ["Eliminator Macro"]),
-        .library(name: "Eliminator Macro Core", targets: ["Eliminator Macro Core"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/swift-atoms/swift-algebra.git", branch: "main"),
         .package(url: "https://github.com/swiftlang/swift-syntax.git", "603.0.2"..<"604.0.0"),
     ],
     targets: [
@@ -29,7 +29,7 @@ let package = Package(
             dependencies: [],
             path: "Sources/Coproduct"
         ),
-        
+
         .target(
             name: "Coproduct Foundation Integration",
             dependencies: [
@@ -54,15 +54,16 @@ let package = Package(
             path: "Tests/Coproduct Tests"
         ),
         .target(
-            name: "Coproduct Macro Core",
+            name: "Coproduct Syntax",
             dependencies: [
+            .product(name: "Type Algebra Syntax", package: "swift-algebra"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
             ]
         ),
         .testTarget(
             name: "Coproduct Macro Tests",
             dependencies: [
-                "Coproduct Macro Core",
+                "Coproduct Syntax",
                 .product(name: "SwiftParser", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
             ]
@@ -70,7 +71,7 @@ let package = Package(
         .target(
             name: "Eliminator Macro Core",
             dependencies: [
-                "Coproduct Macro Core",
+                "Coproduct Syntax",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
             ]
@@ -113,4 +114,9 @@ for target in package.targets where ![.system, .binary, .plugin, .macro].contain
         .enableUpcomingFeature("InferIsolatedConformances"),
         .enableExperimentalFeature("MoveOnlyTuples"),
     ]
+}
+
+// Consumer compilation must reject visibility regressions, even when other packages suppress warnings.
+for target in package.targets where target.type == .test || target.name.hasSuffix("Consumer Fixtures") {
+    target.swiftSettings = (target.swiftSettings ?? []) + [.treatAllWarnings(as: .error)]
 }

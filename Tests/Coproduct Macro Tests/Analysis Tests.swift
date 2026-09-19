@@ -1,4 +1,4 @@
-import Coproduct_Macro_Core
+import Coproduct_Syntax
 import SwiftParser
 import SwiftSyntax
 import Testing

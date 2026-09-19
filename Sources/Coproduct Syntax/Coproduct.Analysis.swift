@@ -1,3 +1,4 @@
+import Type_Algebra_Syntax
 public import SwiftSyntax
 
 extension Coproduct {
@@ -19,10 +20,7 @@ extension Coproduct {
 
             public func references(_ parameter: TokenSyntax) -> Bool {
                 parameters.contains { parameterDeclaration in
-                    TypeReference.contains(
-                        parameterDeclaration.type,
-                        named: parameter.text
-                    )
+                    TypeExpression.references(in: parameterDeclaration.type, parameters: [parameter.text]).contains(parameter.text)
                 }
             }
 
@@ -218,31 +216,5 @@ extension Coproduct {
             }
             return nil
         }
-    }
-}
-
-private final class TypeReference: SyntaxVisitor {
-    private let name: String
-    private var found = false
-
-    private init(name: String) {
-        self.name = name
-        super.init(viewMode: .sourceAccurate)
-    }
-
-    override func visit(
-        _ node: IdentifierTypeSyntax
-    ) -> SyntaxVisitorContinueKind {
-        if node.name.text == name {
-            found = true
-            return .skipChildren
-        }
-        return .visitChildren
-    }
-
-    static func contains(_ type: TypeSyntax, named name: String) -> Bool {
-        let reference = TypeReference(name: name)
-        reference.walk(type)
-        return reference.found
     }
 }
