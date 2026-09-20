@@ -71,6 +71,7 @@ let package = Package(
         .target(
             name: "Eliminator Macro Core",
             dependencies: [
+                .product(name: "Type Algebra Syntax", package: "swift-algebra"),
                 "Coproduct Syntax",
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),

@@ -1,4 +1,4 @@
-import Type_Algebra_Syntax
+public import Type_Algebra_Syntax
 public import SwiftSyntax
 
 extension Coproduct {
@@ -20,7 +20,7 @@ extension Coproduct {
 
             public func references(_ parameter: TokenSyntax) -> Bool {
                 parameters.contains { parameterDeclaration in
-                    TypeExpression.references(in: parameterDeclaration.type, parameters: [parameter.text]).contains(parameter.text)
+                    Type.Syntax.Expression.references(in: parameterDeclaration.type, parameters: [parameter.text]).contains(parameter.text)
                 }
             }
 
@@ -114,6 +114,12 @@ extension Coproduct {
                     return second
                 }
                 return nil
+            }
+        }
+
+        public var algebra: Type.Record {
+            get throws {
+                try Type.Record(cases.map { .init($0.name.text, Type.Syntax.Expression($0.payload, parameters: []).algebra) })
             }
         }
 
