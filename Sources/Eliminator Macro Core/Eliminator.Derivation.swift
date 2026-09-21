@@ -54,9 +54,7 @@ extension Eliminator {
 
                     \(raw: asynchronous || consuming ? "" : "@_lifetime(borrow self, borrow value)")
                     \(raw: access)func callAsFunction(_ value: \(raw: convention) \(analysis.whole))\(raw: effects) -> Result {
-                        switch \(raw: consuming ? "consume " : analysis.isCopyableSuppressed ? "" : "copy ")value {
-                        \(raw: branches)
-                        }
+                        \(raw: analysis.cases.isEmpty ? "" : "switch \(consuming ? "consume " : analysis.isCopyableSuppressed ? "" : "copy ")value {\n\(branches)\n}")
                     }
                 }
                 """]

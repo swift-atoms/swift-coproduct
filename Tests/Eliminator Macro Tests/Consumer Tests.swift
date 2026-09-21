@@ -86,3 +86,12 @@ func `derived eliminator borrows a noncopyable tuple payload`() {
 
     #expect(eliminator(selection) == 42)
 }
+
+@Eliminator
+private enum Empty {}
+
+@Test
+func `empty coproduct has a unique empty product of handlers`() {
+    _ = Empty.Eliminator<Int>()
+    _ = Empty.Eliminator<LinearOutcome>()
+}
