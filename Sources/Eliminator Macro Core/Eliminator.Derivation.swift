@@ -33,7 +33,6 @@ extension Eliminator {
                 guard case .exponential(let domain, let codomain) = arrow else { throw Type.Failure("expected handler arrow") }
                 let item = analysis.cases[index]
                 let output = try interpreter.type(codomain).trimmedDescription
-                // Tuple labels and ownership belong to the Swift representation of the domain.
                 let input = item.parameters.isEmpty ? "" : "\(convention) \(try interpreter.type(domain))"
                 let type = "(\(input))\(effects) -> \(output)"
                 return .init(alternatives.fields[index].name, type: type, argument: "@escaping " + type, mutable: false)
