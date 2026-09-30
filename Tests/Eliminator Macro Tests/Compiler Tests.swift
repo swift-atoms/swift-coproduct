@@ -1,3 +1,4 @@
+#if os(macOS)
 import Foundation
 import Testing
 
@@ -56,3 +57,4 @@ private struct `Compiler Tests` {
         return diagnostic
     }
 }
+#endif
