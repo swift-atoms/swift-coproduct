@@ -1,9 +1,9 @@
 #if hasFeature(VariadicEnum)
 #if !hasFeature(Embedded)
-extension Coproduct: Swift.Encodable where repeat each Element: Swift.Encodable {
+extension Coproduct: Swift::Encodable where repeat each Element: Swift::Encodable {
 
             @inlinable
-            public func encode(to encoder: any Encoder) throws(any Swift.Error) {
+            public func encode(to encoder: any Encoder) throws(any Swift::Error) {
 
                 var container = encoder.unkeyedContainer()
                 switch self {

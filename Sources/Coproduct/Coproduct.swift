@@ -8,26 +8,26 @@
 
 
 #if hasFeature(VariadicEnum)
-extension Coproduct: Swift.Copyable
-    where repeat each Element: Swift.Copyable & ~Escapable {}
+extension Coproduct: Swift::Copyable
+    where repeat each Element: Swift::Copyable & ~Escapable {}
 #endif
 
 
 #if hasFeature(VariadicEnum)
-extension Coproduct: Swift.Escapable
-    where repeat each Element: Swift.Escapable & ~Copyable {}
+extension Coproduct: Swift::Escapable
+    where repeat each Element: Swift::Escapable & ~Copyable {}
 #endif
 
 
 #if hasFeature(VariadicEnum)
-extension Coproduct: Swift.Sendable
-    where repeat each Element: Swift.Sendable & ~Copyable & ~Escapable {}
+extension Coproduct: Swift::Sendable
+    where repeat each Element: Swift::Sendable & ~Copyable & ~Escapable {}
 #endif
 
 
 #if hasFeature(VariadicEnum)
 #if !hasFeature(Embedded)
-extension Coproduct: Swift.Codable where repeat each Element: Swift.Codable {}
+extension Coproduct: Swift::Codable where repeat each Element: Swift::Codable {}
 #endif
 
 #endif

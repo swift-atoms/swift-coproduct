@@ -2,7 +2,7 @@
 extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
-        public static func flatMap<each NewElement: ~Copyable, E: Swift.Error>(
+        public static func flatMap<each NewElement: ~Copyable, E: Swift::Error>(
             _ coproduct: consuming Coproduct,
             _ transforms:
                 repeat (consuming each Element) throws(E) -> Coproduct<repeat each NewElement>
@@ -21,7 +21,7 @@ extension Coproduct where repeat each Element: ~Copyable {
 extension Coproduct where repeat each Element == FirstElement, FirstElement: ~Copyable {
 
         @inlinable
-        public static func flatMap<each NewElement: ~Copyable, E: Swift.Error>(
+        public static func flatMap<each NewElement: ~Copyable, E: Swift::Error>(
             _ coproduct: consuming Coproduct,
             _ transform:
                 (consuming FirstElement) throws(E) -> Coproduct<repeat each NewElement>
@@ -39,7 +39,7 @@ extension Coproduct where repeat each Element == FirstElement, FirstElement: ~Co
 extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
-        public consuming func flatMap<each NewElement: ~Copyable, E: Swift.Error>(
+        public consuming func flatMap<each NewElement: ~Copyable, E: Swift::Error>(
             _ transforms:
                 repeat (consuming each Element) throws(E) -> Coproduct<repeat each NewElement>
         ) throws(E) -> Coproduct<repeat each NewElement> {

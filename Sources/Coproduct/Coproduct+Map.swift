@@ -2,7 +2,7 @@
 extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
-        public static func map<each NewElement: ~Copyable, E: Swift.Error>(
+        public static func map<each NewElement: ~Copyable, E: Swift::Error>(
             _ coproduct: consuming Coproduct,
             _ transforms: repeat (consuming each Element) throws(E) -> each NewElement
         ) throws(E) -> Coproduct<repeat each NewElement> {
@@ -20,7 +20,7 @@ extension Coproduct where repeat each Element: ~Copyable {
 extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
-        public consuming func map<each NewElement: ~Copyable, E: Swift.Error>(
+        public consuming func map<each NewElement: ~Copyable, E: Swift::Error>(
             _ transforms: repeat (consuming each Element) throws(E) -> each NewElement
         ) throws(E) -> Coproduct<repeat each NewElement> {
             try Self.map(self, repeat each transforms)

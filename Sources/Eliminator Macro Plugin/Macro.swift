@@ -2,7 +2,9 @@ import SwiftSyntax
 import SwiftSyntaxMacros
 import Eliminator_Macro_Core
 
-public struct Macro: MemberMacro {
+public struct Macro: MemberMacro {}
+
+extension Macro {
     public static func expansion(
         of node: AttributeSyntax,
         providingMembersOf declaration: some DeclGroupSyntax,

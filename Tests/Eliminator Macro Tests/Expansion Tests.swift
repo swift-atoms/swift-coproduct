@@ -5,7 +5,7 @@ import Testing
 @testable import Eliminator_Macro_Plugin
 
 private let eliminatorMacros: [String: MacroSpec] = [
-    "Eliminator": MacroSpec(type: Eliminator_Macro_Plugin.Macro.self)
+    "Eliminator": MacroSpec(type: Eliminator_Macro_Plugin::Macro.self)
 ]
 
 @Test

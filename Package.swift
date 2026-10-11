@@ -49,7 +49,6 @@ let package = Package(
             dependencies: [
                 .target(name: "Coproduct"),
                 .target(name: "Coproduct Test Support"),
-                .target(name: "Coproduct Foundation Integration"),
             ],
             path: "Tests/Coproduct Tests"
         ),
@@ -63,7 +62,7 @@ let package = Package(
         .testTarget(
             name: "Coproduct Macro Tests",
             dependencies: [
-                "Coproduct Syntax",
+                .target(name: "Coproduct Syntax"),
                 .product(name: "SwiftParser", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
             ]
@@ -72,7 +71,7 @@ let package = Package(
             name: "Eliminator Macro Core",
             dependencies: [
                 .product(name: "Type Algebra Syntax", package: "swift-algebra"),
-                "Coproduct Syntax",
+                .target(name: "Coproduct Syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxBuilder", package: "swift-syntax"),
             ]
@@ -80,7 +79,7 @@ let package = Package(
         .macro(
             name: "Eliminator Macro Plugin",
             dependencies: [
-                "Eliminator Macro Core",
+                .target(name: "Eliminator Macro Core"),
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacros", package: "swift-syntax"),
@@ -88,13 +87,13 @@ let package = Package(
         ),
         .target(
             name: "Eliminator Macro",
-            dependencies: ["Eliminator Macro Plugin"]
+            dependencies: [.target(name: "Eliminator Macro Plugin")]
         ),
         .testTarget(
             name: "Eliminator Macro Tests",
             dependencies: [
-                "Eliminator Macro",
-                "Eliminator Macro Plugin",
+                .target(name: "Eliminator Macro"),
+                .target(name: "Eliminator Macro Plugin"),
                 .product(name: "SwiftSyntaxMacroExpansion", package: "swift-syntax"),
                 .product(name: "SwiftSyntaxMacrosGenericTestSupport", package: "swift-syntax"),
             ],

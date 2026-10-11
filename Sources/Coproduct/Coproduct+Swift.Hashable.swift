@@ -1,6 +1,6 @@
 #if hasFeature(VariadicEnum)
-extension Coproduct: Swift.Hashable
-    where repeat each Element: Swift.Hashable & ~Copyable {
+extension Coproduct: Swift::Hashable
+    where repeat each Element: Swift::Hashable & ~Copyable {
 
         @inlinable
         public borrowing func hash(into hasher: inout Hasher) {

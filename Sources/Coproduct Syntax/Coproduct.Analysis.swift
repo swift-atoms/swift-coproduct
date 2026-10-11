@@ -17,103 +17,6 @@ extension Coproduct {
                 } ?? []
                 payload = Self.payload(of: parameters)
             }
-
-            public func references(_ parameter: TokenSyntax) -> Bool {
-                parameters.contains { parameterDeclaration in
-                    Type.Syntax.Expression.references(in: parameterDeclaration.type, parameters: [parameter.text]).contains(parameter.text)
-                }
-            }
-
-            public func isDirectReference(to parameter: TokenSyntax) -> Bool {
-                guard
-                    parameters.count == 1,
-                    let identifier = parameters[0].type.as(IdentifierTypeSyntax.self)
-                else { return false }
-                return identifier.moduleSelector == nil
-                    && identifier.genericArgumentClause == nil
-                    && identifier.name.text == parameter.text
-            }
-
-            public func tupleLabel(at offset: Int) -> TokenSyntax? {
-                Self.tupleLabel(of: parameters[offset])
-            }
-
-            public func constructorLabel(at offset: Int) -> TokenSyntax? {
-                let first = parameters[offset].firstName
-                return first?.tokenKind == .wildcard ? nil : first
-            }
-
-            public func bindings(_ stem: String = "value") -> [String] {
-                parameters.indices.map { "\(stem)\($0)" }
-            }
-
-            public func pattern(_ stem: String = "value") -> String {
-                parameters.isEmpty ? ".\(name.text)" : "let .\(name.text)(\(bindings(stem).joined(separator: ", ")))"
-            }
-
-            public func constructorArguments(_ values: [String]) -> String {
-                values.enumerated().map { offset, value in
-                    constructorLabel(at: offset).map { "\($0.text): \(value)" } ?? value
-                }.joined(separator: ", ")
-            }
-
-            public func payloadExpression(_ values: [String]) -> String {
-                switch values.count {
-                case 0: return "()"
-                case 1: return values[0]
-                default:
-                    let elements = values.enumerated().map { offset, value in
-                        tupleLabel(at: offset).map { "\($0.text): \(value)" } ?? value
-                    }
-                    return "(\(elements.joined(separator: ", ")))"
-                }
-            }
-
-            private static func payload(
-                of parameters: [EnumCaseParameterSyntax]
-            ) -> TypeSyntax {
-                switch parameters.count {
-                case 0:
-                    return TypeSyntax(
-                        IdentifierTypeSyntax(name: .identifier("Void"))
-                    )
-                case 1:
-                    return parameters[0].type
-                default:
-                    let elements = parameters.enumerated().map { offset, parameter in
-                        let label = tupleLabel(of: parameter)
-                        return TupleTypeElementSyntax(
-                            firstName: label,
-                            colon: label == nil ? nil : .colonToken(trailingTrivia: .space),
-                            type: parameter.type,
-                            trailingComma: offset == parameters.count - 1
-                                ? nil
-                                : .commaToken(trailingTrivia: .space)
-                        )
-                    }
-                    return TypeSyntax(
-                        TupleTypeSyntax(elements: TupleTypeElementListSyntax(elements))
-                    )
-                }
-            }
-
-            private static func tupleLabel(
-                of parameter: EnumCaseParameterSyntax
-            ) -> TokenSyntax? {
-                if let first = parameter.firstName, first.tokenKind != .wildcard {
-                    return first
-                }
-                if let second = parameter.secondName, second.tokenKind != .wildcard {
-                    return second
-                }
-                return nil
-            }
-        }
-
-        public var algebra: Type.Record {
-            get throws {
-                try Type.Record(cases.map { .init($0.name.text, Type.Syntax.Expression($0.payload, parameters: []).algebra) })
-            }
         }
 
         public let declaration: EnumDeclSyntax?
@@ -169,51 +72,152 @@ extension Coproduct {
             self.genericParameter = genericParameter
             self.isCopyableSuppressed = isCopyableSuppressed
         }
+    }
+}
 
-        private static func suppressesCopyable(
-            _ declaration: EnumDeclSyntax
-        ) -> Bool {
-            declaration.inheritanceClause?.inheritedTypes.contains { inherited in
-                guard
-                    let suppressed = inherited.type.as(SuppressedTypeSyntax.self),
-                    let identifier = suppressed.type.as(IdentifierTypeSyntax.self)
-                else { return false }
-                return identifier.moduleSelector == nil
-                    && identifier.genericArgumentClause == nil
-                    && identifier.name.text == "Copyable"
-            } ?? false
+extension Coproduct.Analysis.Case {
+    public func references(_ parameter: TokenSyntax) -> Bool {
+        parameters.contains { parameterDeclaration in
+            Type.Syntax.Expression.references(in: parameterDeclaration.type, parameters: [parameter.text]).contains(parameter.text)
         }
+    }
 
-        private static func unconstrainedParameter(
-            of declaration: EnumDeclSyntax
-        ) -> TokenSyntax? {
-            guard
-                declaration.genericWhereClause == nil,
-                let parameters = declaration.genericParameterClause?.parameters,
-                parameters.count == 1,
-                let parameter = parameters.first,
-                parameter.attributes.isEmpty,
-                parameter.specifier == nil,
-                parameter.colon == nil,
-                parameter.inheritedType == nil
-            else { return nil }
-            return parameter.name
-        }
+    public func isDirectReference(to parameter: TokenSyntax) -> Bool {
+        guard
+            parameters.count == 1,
+            let identifier = parameters[0].type.as(IdentifierTypeSyntax.self)
+        else { return false }
+        return identifier.moduleSelector == nil
+            && identifier.genericArgumentClause == nil
+            && identifier.name.text == parameter.text
+    }
 
-        private static func access(
-            of declaration: EnumDeclSyntax
-        ) -> DeclModifierSyntax? {
-            for modifier in declaration.modifiers {
-                switch modifier.name.tokenKind {
-                case .keyword(.public), .keyword(.package), .keyword(.fileprivate):
-                    return modifier
-                case .keyword(.private):
-                    return DeclModifierSyntax(name: .keyword(.fileprivate))
-                default:
-                    continue
-                }
+    public func tupleLabel(at offset: Int) -> TokenSyntax? {
+        Self.tupleLabel(of: parameters[offset])
+    }
+
+    public func constructorLabel(at offset: Int) -> TokenSyntax? {
+        let first = parameters[offset].firstName
+        return first?.tokenKind == .wildcard ? nil : first
+    }
+
+    public func bindings(_ stem: String = "value") -> [String] {
+        parameters.indices.map { "\(stem)\($0)" }
+    }
+
+    public func pattern(_ stem: String = "value") -> String {
+        parameters.isEmpty ? ".\(name.text)" : "let .\(name.text)(\(bindings(stem).joined(separator: ", ")))"
+    }
+
+    public func constructorArguments(_ values: [String]) -> String {
+        values.enumerated().map { offset, value in
+            constructorLabel(at: offset).map { "\($0.text): \(value)" } ?? value
+        }.joined(separator: ", ")
+    }
+
+    public func payloadExpression(_ values: [String]) -> String {
+        switch values.count {
+        case 0: return "()"
+        case 1: return values[0]
+        default:
+            let elements = values.enumerated().map { offset, value in
+                tupleLabel(at: offset).map { "\($0.text): \(value)" } ?? value
             }
-            return nil
+            return "(\(elements.joined(separator: ", ")))"
         }
+    }
+
+    private static func payload(
+        of parameters: [EnumCaseParameterSyntax]
+    ) -> TypeSyntax {
+        switch parameters.count {
+        case 0:
+            return TypeSyntax(
+                IdentifierTypeSyntax(name: .identifier("Void"))
+            )
+        case 1:
+            return parameters[0].type
+        default:
+            let elements = parameters.enumerated().map { offset, parameter in
+                let label = tupleLabel(of: parameter)
+                return TupleTypeElementSyntax(
+                    firstName: label,
+                    colon: label == nil ? nil : .colonToken(trailingTrivia: .space),
+                    type: parameter.type,
+                    trailingComma: offset == parameters.count - 1
+                        ? nil
+                        : .commaToken(trailingTrivia: .space)
+                )
+            }
+            return TypeSyntax(
+                TupleTypeSyntax(elements: TupleTypeElementListSyntax(elements))
+            )
+        }
+    }
+
+    private static func tupleLabel(
+        of parameter: EnumCaseParameterSyntax
+    ) -> TokenSyntax? {
+        if let first = parameter.firstName, first.tokenKind != .wildcard {
+            return first
+        }
+        if let second = parameter.secondName, second.tokenKind != .wildcard {
+            return second
+        }
+        return nil
+    }
+}
+
+extension Coproduct.Analysis {
+    public var algebra: Type.Record {
+        get throws {
+            try Type.Record(cases.map { .init($0.name.text, Type.Syntax.Expression($0.payload, parameters: []).algebra) })
+        }
+    }
+
+    private static func suppressesCopyable(
+        _ declaration: EnumDeclSyntax
+    ) -> Bool {
+        declaration.inheritanceClause?.inheritedTypes.contains { inherited in
+            guard
+                let suppressed = inherited.type.as(SuppressedTypeSyntax.self),
+                let identifier = suppressed.type.as(IdentifierTypeSyntax.self)
+            else { return false }
+            return identifier.moduleSelector == nil
+                && identifier.genericArgumentClause == nil
+                && identifier.name.text == "Copyable"
+        } ?? false
+    }
+
+    private static func unconstrainedParameter(
+        of declaration: EnumDeclSyntax
+    ) -> TokenSyntax? {
+        guard
+            declaration.genericWhereClause == nil,
+            let parameters = declaration.genericParameterClause?.parameters,
+            parameters.count == 1,
+            let parameter = parameters.first,
+            parameter.attributes.isEmpty,
+            parameter.specifier == nil,
+            parameter.colon == nil,
+            parameter.inheritedType == nil
+        else { return nil }
+        return parameter.name
+    }
+
+    private static func access(
+        of declaration: EnumDeclSyntax
+    ) -> DeclModifierSyntax? {
+        for modifier in declaration.modifiers {
+            switch modifier.name.tokenKind {
+            case .keyword(.public), .keyword(.package), .keyword(.fileprivate):
+                return modifier
+            case .keyword(.private):
+                return DeclModifierSyntax(name: .keyword(.fileprivate))
+            default:
+                continue
+            }
+        }
+        return nil
     }
 }

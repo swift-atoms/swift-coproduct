@@ -2,7 +2,7 @@
 extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
 
         @inlinable
-        public static func fold<Result: ~Copyable, E: Swift.Error>(
+        public static func fold<Result: ~Copyable, E: Swift::Error>(
             _ coproduct: consuming Coproduct,
             _ handlers: repeat (consuming each Element) throws(E) -> Result
         ) throws(E) -> Result {
@@ -20,7 +20,7 @@ extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
 extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
 
         @inlinable
-        public consuming func fold<Result: ~Copyable, E: Swift.Error>(
+        public consuming func fold<Result: ~Copyable, E: Swift::Error>(
             _ handlers: repeat (consuming each Element) throws(E) -> Result
         ) throws(E) -> Result {
             try Self.fold(self, repeat each handlers)
