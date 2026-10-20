@@ -1,5 +1,6 @@
 import Eliminator_Macro
 import Testing
+
 private enum Failure: Error { case selected }
 @Eliminator(consuming: false, asynchronous: false, throwing: false)
 private enum Choice000 { case value(Int) }

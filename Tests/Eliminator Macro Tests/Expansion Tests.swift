@@ -16,8 +16,8 @@ func `eliminator derivation diagnoses a non enum attachment`() {
         struct Choice {}
         """,
         expandedSource: """
-        struct Choice {}
-        """,
+            struct Choice {}
+            """,
         diagnostics: [
             DiagnosticSpec(
                 message: "@Eliminator applies to an enum declaration only.",

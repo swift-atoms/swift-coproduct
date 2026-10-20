@@ -1,5 +1,5 @@
-public import Type_Algebra_Syntax
 public import SwiftSyntax
+public import Type_Algebra_Syntax
 
 extension Coproduct {
     public struct Analysis {
@@ -12,9 +12,10 @@ extension Coproduct {
             public init(_ element: EnumCaseElementSyntax) {
                 self.element = element
                 name = element.name
-                parameters = element.parameterClause.map {
-                    Array($0.parameters)
-                } ?? []
+                parameters =
+                    element.parameterClause.map {
+                        Array($0.parameters)
+                    } ?? []
                 payload = Self.payload(of: parameters)
             }
         }
@@ -78,7 +79,10 @@ extension Coproduct {
 extension Coproduct.Analysis.Case {
     public func references(_ parameter: TokenSyntax) -> Bool {
         parameters.contains { parameterDeclaration in
-            Type.Syntax.Expression.references(in: parameterDeclaration.type, parameters: [parameter.text]).contains(parameter.text)
+            Type.Syntax.Expression.references(
+                in: parameterDeclaration.type,
+                parameters: [parameter.text]
+            ).contains(parameter.text)
         }
     }
 
@@ -106,7 +110,8 @@ extension Coproduct.Analysis.Case {
     }
 
     public func pattern(_ stem: String = "value") -> String {
-        parameters.isEmpty ? ".\(name.text)" : "let .\(name.text)(\(bindings(stem).joined(separator: ", ")))"
+        parameters.isEmpty
+            ? ".\(name.text)" : "let .\(name.text)(\(bindings(stem).joined(separator: ", ")))"
     }
 
     public func constructorArguments(_ values: [String]) -> String {
@@ -171,7 +176,11 @@ extension Coproduct.Analysis.Case {
 extension Coproduct.Analysis {
     public var algebra: Type.Record {
         get throws {
-            try Type.Record(cases.map { .init($0.name.text, Type.Syntax.Expression($0.payload, parameters: []).algebra) })
+            try Type.Record(
+                cases.map {
+                    .init($0.name.text, Type.Syntax.Expression($0.payload, parameters: []).algebra)
+                }
+            )
         }
     }
 

@@ -14,7 +14,10 @@ let package = Package(
     ],
     products: [
         .library(name: "Coproduct", targets: ["Coproduct"]),
-        .library(name: "Coproduct Foundation Integration", targets: ["Coproduct Foundation Integration"]),
+        .library(
+            name: "Coproduct Foundation Integration",
+            targets: ["Coproduct Foundation Integration"]
+        ),
         .library(name: "Coproduct Test Support", targets: ["Coproduct Test Support"]),
         .library(name: "Coproduct Syntax", targets: ["Coproduct Syntax"]),
         .library(name: "Eliminator Macro", targets: ["Eliminator Macro"]),
@@ -33,14 +36,14 @@ let package = Package(
         .target(
             name: "Coproduct Foundation Integration",
             dependencies: [
-                .target(name: "Coproduct"),
+                .target(name: "Coproduct")
             ],
             path: "Sources/Coproduct Foundation Integration"
         ),
         .target(
             name: "Coproduct Test Support",
             dependencies: [
-                .target(name: "Coproduct"),
+                .target(name: "Coproduct")
             ],
             path: "Tests/Support"
         ),
@@ -55,7 +58,7 @@ let package = Package(
         .target(
             name: "Coproduct Syntax",
             dependencies: [
-            .product(name: "Type Algebra Syntax", package: "swift-algebra"),
+                .product(name: "Type Algebra Syntax", package: "swift-algebra"),
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
             ]
         ),
@@ -105,14 +108,15 @@ let package = Package(
 )
 
 for target in package.targets where ![.system, .binary, .plugin, .macro].contains(target.type) {
-    target.swiftSettings = (target.swiftSettings ?? []) + [
-        .strictMemorySafety(),
-        .enableUpcomingFeature("ExistentialAny"),
-        .enableUpcomingFeature("InternalImportsByDefault"),
-        .enableUpcomingFeature("MemberImportVisibility"),
-        .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
-        .enableUpcomingFeature("InferIsolatedConformances"),
-        .enableExperimentalFeature("Lifetimes"),
-        .treatAllWarnings(as: .error),
-    ]
+    target.swiftSettings =
+        (target.swiftSettings ?? []) + [
+            .strictMemorySafety(),
+            .enableUpcomingFeature("ExistentialAny"),
+            .enableUpcomingFeature("InternalImportsByDefault"),
+            .enableUpcomingFeature("MemberImportVisibility"),
+            .enableUpcomingFeature("NonisolatedNonsendingByDefault"),
+            .enableUpcomingFeature("InferIsolatedConformances"),
+            .enableExperimentalFeature("Lifetimes"),
+            .treatAllWarnings(as: .error),
+        ]
 }

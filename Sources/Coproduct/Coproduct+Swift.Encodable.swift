@@ -1,6 +1,6 @@
 #if hasFeature(VariadicEnum)
-#if !hasFeature(Embedded)
-extension Coproduct: Swift::Encodable where repeat each Element: Swift::Encodable {
+    #if !hasFeature(Embedded)
+        extension Coproduct: Swift::Encodable where repeat each Element: Swift::Encodable {
 
             @inlinable
             public func encode(to encoder: any Encoder) throws(any Swift::Error) {
@@ -12,6 +12,6 @@ extension Coproduct: Swift::Encodable where repeat each Element: Swift::Encodabl
                 }
             }
         }
-#endif
+    #endif
 
 #endif

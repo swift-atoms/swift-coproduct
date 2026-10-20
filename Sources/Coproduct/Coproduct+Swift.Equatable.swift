@@ -1,5 +1,5 @@
 #if hasFeature(VariadicEnum)
-extension Coproduct: Swift::Equatable
+    extension Coproduct: Swift::Equatable
     where repeat each Element: Swift::Equatable & ~Copyable {
 
         @inlinable

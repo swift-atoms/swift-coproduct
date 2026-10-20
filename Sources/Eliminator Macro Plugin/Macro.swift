@@ -1,6 +1,6 @@
+import Eliminator_Macro_Core
 import SwiftSyntax
 import SwiftSyntaxMacros
-import Eliminator_Macro_Core
 
 public struct Macro: MemberMacro {}
 
@@ -16,14 +16,20 @@ extension Macro {
         }
         let arguments = node.arguments?.as(LabeledExprListSyntax.self) ?? []
         func enabled(_ label: String) throws -> Bool {
-            guard let expression = arguments.first(where: { $0.label?.text == label })?.expression else { return false }
+            guard let expression = arguments.first(where: { $0.label?.text == label })?.expression
+            else { return false }
             guard let literal = expression.as(BooleanLiteralExprSyntax.self) else {
-                throw MacroExpansionErrorMessage("@Eliminator requires literal Boolean effect and ownership choices")
+                throw MacroExpansionErrorMessage(
+                    "@Eliminator requires literal Boolean effect and ownership choices"
+                )
             }
             return literal.literal.text == "true"
         }
         return Eliminator.Derivation.expansion(
-            of: declaration, consuming: try enabled("consuming"), asynchronous: try enabled("asynchronous"), throwing: try enabled("throwing")
+            of: declaration,
+            consuming: try enabled("consuming"),
+            asynchronous: try enabled("asynchronous"),
+            throwing: try enabled("throwing")
         )
     }
 }

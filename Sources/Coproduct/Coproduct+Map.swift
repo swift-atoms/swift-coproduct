@@ -1,5 +1,5 @@
 #if hasFeature(VariadicEnum)
-extension Coproduct where repeat each Element: ~Copyable {
+    extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
         public static func map<each NewElement: ~Copyable, E: Swift::Error>(
@@ -15,9 +15,8 @@ extension Coproduct where repeat each Element: ~Copyable {
     }
 #endif
 
-
 #if hasFeature(VariadicEnum)
-extension Coproduct where repeat each Element: ~Copyable {
+    extension Coproduct where repeat each Element: ~Copyable {
 
         @inlinable
         public consuming func map<each NewElement: ~Copyable, E: Swift::Error>(

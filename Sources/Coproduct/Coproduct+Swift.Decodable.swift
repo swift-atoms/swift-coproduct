@@ -1,6 +1,6 @@
 #if hasFeature(VariadicEnum)
-#if !hasFeature(Embedded)
-extension Coproduct: Swift::Decodable where repeat each Element: Swift::Decodable {
+    #if !hasFeature(Embedded)
+        extension Coproduct: Swift::Decodable where repeat each Element: Swift::Decodable {
 
             @inlinable
             public init(from decoder: any Decoder) throws(any Swift::Error) {
@@ -11,6 +11,6 @@ extension Coproduct: Swift::Decodable where repeat each Element: Swift::Decodabl
                 fatalError("Pack-position decoding pending the shipped pack-eliminator syntax")
             }
         }
-#endif
+    #endif
 
 #endif

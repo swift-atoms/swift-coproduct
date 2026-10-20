@@ -1,5 +1,5 @@
 #if hasFeature(VariadicEnum)
-extension Coproduct: Swift::Hashable
+    extension Coproduct: Swift::Hashable
     where repeat each Element: Swift::Hashable & ~Copyable {
 
         @inlinable

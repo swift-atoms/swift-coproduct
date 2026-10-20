@@ -1,5 +1,5 @@
 #if hasFeature(VariadicEnum)
-@inlinable
+    @inlinable
     @_lifetime(copy coproduct)
     public func value<each Other, Inhabited: ~Copyable & ~Escapable>(
         of coproduct: consuming Coproduct<repeat each Other, Inhabited>

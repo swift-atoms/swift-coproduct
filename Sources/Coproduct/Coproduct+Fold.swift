@@ -1,5 +1,5 @@
 #if hasFeature(VariadicEnum)
-extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
+    extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
 
         @inlinable
         public static func fold<Result: ~Copyable, E: Swift::Error>(
@@ -15,9 +15,8 @@ extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
     }
 #endif
 
-
 #if hasFeature(VariadicEnum)
-extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
+    extension Coproduct where repeat each Element: ~Copyable & ~Escapable {
 
         @inlinable
         public consuming func fold<Result: ~Copyable, E: Swift::Error>(
