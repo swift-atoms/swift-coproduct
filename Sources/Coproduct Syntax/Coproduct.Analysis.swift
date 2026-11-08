@@ -3,6 +3,23 @@ public import Type_Algebra_Syntax
 
 extension Coproduct {
     public struct Analysis {
+        public struct Case {
+            public let element: EnumCaseElementSyntax
+            public let name: TokenSyntax
+            public let parameters: [EnumCaseParameterSyntax]
+            public let payload: TypeSyntax
+
+            public init(_ element: EnumCaseElementSyntax) {
+                self.element = element
+                name = element.name
+                parameters =
+                    element.parameterClause.map {
+                        Array($0.parameters)
+                    } ?? []
+                payload = Self.payload(of: parameters)
+            }
+        }
+
         public let declaration: EnumDeclSyntax?
         public let whole: TypeSyntax
         public let access: DeclModifierSyntax?
@@ -55,25 +72,6 @@ extension Coproduct {
             self.cases = cases.map(Case.init)
             self.genericParameter = genericParameter
             self.isCopyableSuppressed = isCopyableSuppressed
-        }
-    }
-}
-
-extension Coproduct.Analysis {
-    public struct Case {
-        public let element: EnumCaseElementSyntax
-        public let name: TokenSyntax
-        public let parameters: [EnumCaseParameterSyntax]
-        public let payload: TypeSyntax
-
-        public init(_ element: EnumCaseElementSyntax) {
-            self.element = element
-            name = element.name
-            parameters =
-                element.parameterClause.map {
-                    Array($0.parameters)
-                } ?? []
-            payload = Self.payload(of: parameters)
         }
     }
 }
