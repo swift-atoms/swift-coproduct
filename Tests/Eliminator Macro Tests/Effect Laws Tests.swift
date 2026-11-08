@@ -18,7 +18,7 @@ private enum Choice101 { case value(Int) }
 private enum Choice110 { case value(Int) }
 @Eliminator(consuming: true, asynchronous: true, throwing: true)
 private enum Choice111 { case value(Int) }
-@Test func eliminationSeparatesAllOwnershipAndEffectAxes() async throws {
+@Test func `elimination separates all ownership and effect axes`() async throws {
     let e000 = Choice000.Eliminator<Int>(value: { $0 + 1 })
     #expect(e000(.value(3)) == 4)
     let e001 = Choice001.Eliminator<Int>(value: { $0 + 1 })
@@ -36,7 +36,7 @@ private enum Choice111 { case value(Int) }
     let e111 = Choice111.Eliminator<Int>(value: { $0 + 1 })
     #expect(try await e111(.value(3)) == 4)
 }
-@Test func throwingEliminationPreservesTheError() {
+@Test func `throwing elimination preserves the error`() {
     let e = Choice001.Eliminator<Int>(value: { _ in throw Failure.selected })
     #expect(throws: Failure.self) { try e(.value(1)) }
 }
