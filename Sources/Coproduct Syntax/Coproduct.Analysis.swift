@@ -30,7 +30,7 @@ extension Coproduct {
         public init(_ declaration: EnumDeclSyntax) {
             let elements = declaration.memberBlock.members
                 .compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
-                .flatMap(\.elements)
+                .flatMap({ $0.elements })
             self.init(
                 declaration: declaration,
                 whole: TypeSyntax(IdentifierTypeSyntax(name: declaration.name)),
