@@ -50,6 +50,9 @@ extension Eliminator.Derivation {
         asynchronous: Bool,
         throwing: Bool
     ) throws -> [DeclSyntax] {
+        guard analysis.cases.allSatisfy({ $0.conditions.isEmpty }) else {
+            throw Type.Failure("@Eliminator cannot derive handlers for a case inside #if")
+        }
         let result = Type.Expression.variable(.init("Result"))
         let alternatives = try analysis.algebra
         guard case .product(let arrows) = alternatives.eliminator(returning: result) else {

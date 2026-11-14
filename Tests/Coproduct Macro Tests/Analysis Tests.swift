@@ -35,3 +35,44 @@ func `analysis preserves payload syntax and finds semantic generic references`()
             == "(code: Int, note: String)"
     )
 }
+
+@Test
+func `analysis finds the cases inside conditional compilation blocks with their conditions`() throws {
+    let source = Parser.parse(
+        source: """
+            enum Choice {
+                case always
+                #if canImport(SwiftUI)
+                case view(Int)
+                #if DEBUG
+                case debugView
+                #endif
+                #elseif os(Linux)
+                case linux
+                #else
+                case other
+                #endif
+            }
+            """
+    )
+    let declaration = try #require(
+        source.statements.first?.item.as(EnumDeclSyntax.self)
+    )
+    let analysis = Coproduct.Analysis(declaration)
+
+    #expect(
+        analysis.cases.map(\.name.text) == ["always", "view", "debugView", "linux", "other"]
+    )
+    #expect(
+        analysis.cases.map(\.condition) == [
+            nil,
+            "(canImport(SwiftUI))",
+            "(canImport(SwiftUI)) && (DEBUG)",
+            "!(canImport(SwiftUI)) && (os(Linux))",
+            "!(canImport(SwiftUI)) && !(os(Linux))",
+        ]
+    )
+    #expect(!analysis.isSingleCase)
+    #expect(analysis.cases[0].conditional("x") == "x")
+    #expect(analysis.cases[2].conditional("x") == "#if (canImport(SwiftUI)) && (DEBUG)\nx\n#endif")
+}

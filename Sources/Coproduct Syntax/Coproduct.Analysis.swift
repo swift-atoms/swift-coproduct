@@ -8,9 +8,14 @@ extension Coproduct {
             public let name: TokenSyntax
             public let parameters: [EnumCaseParameterSyntax]
             public let payload: TypeSyntax
+            public let conditions: [Condition]
 
-            public init(_ element: EnumCaseElementSyntax) {
+            public init(
+                _ element: EnumCaseElementSyntax,
+                conditions: [Condition] = []
+            ) {
                 self.element = element
+                self.conditions = conditions
                 name = element.name
                 parameters =
                     element.parameterClause.map {
@@ -28,14 +33,11 @@ extension Coproduct {
         public let isCopyableSuppressed: Bool
 
         public init(_ declaration: EnumDeclSyntax) {
-            let elements = declaration.memberBlock.members
-                .compactMap { $0.decl.as(EnumCaseDeclSyntax.self) }
-                .flatMap({ $0.elements })
             self.init(
                 declaration: declaration,
                 whole: TypeSyntax(IdentifierTypeSyntax(name: declaration.name)),
                 access: Self.access(of: declaration),
-                cases: Array(elements),
+                cases: Self.cases(in: declaration.memberBlock.members, under: []),
                 genericParameter: Self.unconstrainedParameter(of: declaration),
                 isCopyableSuppressed: Self.suppressesCopyable(declaration)
             )
@@ -52,7 +54,7 @@ extension Coproduct {
                 declaration: nil,
                 whole: whole,
                 access: access,
-                cases: cases,
+                cases: cases.map { Case($0) },
                 genericParameter: genericParameter,
                 isCopyableSuppressed: isCopyableSuppressed
             )
@@ -62,14 +64,14 @@ extension Coproduct {
             declaration: EnumDeclSyntax?,
             whole: TypeSyntax,
             access: DeclModifierSyntax?,
-            cases: [EnumCaseElementSyntax],
+            cases: [Case],
             genericParameter: TokenSyntax?,
             isCopyableSuppressed: Bool
         ) {
             self.declaration = declaration
             self.whole = whole
             self.access = access
-            self.cases = cases.map(Case.init)
+            self.cases = cases
             self.genericParameter = genericParameter
             self.isCopyableSuppressed = isCopyableSuppressed
         }
@@ -77,6 +79,28 @@ extension Coproduct {
 }
 
 extension Coproduct.Analysis.Case {
+    public struct Condition {
+        public let expression: ExprSyntax
+        public let holds: Bool
+
+        public init(_ expression: ExprSyntax, holds: Bool) {
+            self.expression = expression
+            self.holds = holds
+        }
+    }
+
+    public var condition: String? {
+        conditions.isEmpty
+            ? nil
+            : conditions.map {
+                "\($0.holds ? "" : "!")(\($0.expression.trimmedDescription))"
+            }.joined(separator: " && ")
+    }
+
+    public func conditional(_ source: String) -> String {
+        condition.map { "#if \($0)\n\(source)\n#endif" } ?? source
+    }
+
     public func references(_ parameter: TokenSyntax) -> Bool {
         parameters.contains { parameterDeclaration in
             Type.Syntax.Expression.references(
@@ -174,6 +198,32 @@ extension Coproduct.Analysis.Case {
 }
 
 extension Coproduct.Analysis {
+    public var isSingleCase: Bool {
+        cases.count == 1 && cases[0].conditions.isEmpty
+    }
+
+    private static func cases(
+        in members: MemberBlockItemListSyntax,
+        under conditions: [Case.Condition]
+    ) -> [Case] {
+        members.flatMap { member -> [Case] in
+            if let declaration = member.decl.as(EnumCaseDeclSyntax.self) {
+                return declaration.elements.map { Case($0, conditions: conditions) }
+            }
+            guard let configuration = member.decl.as(IfConfigDeclSyntax.self) else { return [] }
+            var excluded: [Case.Condition] = []
+            return configuration.clauses.flatMap { clause -> [Case] in
+                var clauseConditions = conditions + excluded
+                if let expression = clause.condition {
+                    clauseConditions.append(.init(expression, holds: true))
+                    excluded.append(.init(expression, holds: false))
+                }
+                guard case .decls(let nested) = clause.elements else { return [] }
+                return cases(in: nested, under: clauseConditions)
+            }
+        }
+    }
+
     public var algebra: Type.Record {
         get throws {
             try Type.Record(
